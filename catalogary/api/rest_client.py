@@ -1,4 +1,3 @@
-# coding=utf-8
 ####
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)

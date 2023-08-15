@@ -1,4 +1,3 @@
-# coding=utf-8
 ####
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
@@ -164,11 +163,10 @@ class NinaAPI(FedRepRestAPI):
             else:
                 respDetail = self.warning_detail(key=resp_id)
                 respGeo = self.warning_geo(key=resp_id)
-
                 genericCompEntry = {
                     'warning': {key: resp[key] for key in resp.keys() if key in selection},
                     'warning_detail': {key: respDetail[key] for key in respDetail.keys() if key in selection},
-                    'warning_geo': {key: respDetail[key] for key in respGeo.keys() if key in selection}
+                    'warning_geo': {key: respGeo.get(key) for key in respGeo.keys() if key in selection}
                 }
             genericCompList.append(genericCompEntry)
         return genericCompList
@@ -180,6 +178,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},
@@ -198,6 +197,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},
@@ -217,6 +217,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},
@@ -236,6 +237,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},
@@ -255,6 +257,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},
@@ -274,6 +277,7 @@ class NinaAPI(FedRepRestAPI):
             'properties': {
                 'id': {'type': 'string'},
                 'version': {'type': 'number'},
+                'urgency': {'type': 'string'},
                 'startDate': {'type': 'string'},
                 'expiresDate': {'type': 'string'},
                 'severity': {'type': 'string'},

@@ -1,8 +1,8 @@
-# coding: utf8
 ####
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
+import json
 import unittest
 from unittest import TestCase
 from jsonschema import validate
@@ -52,10 +52,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
+            #print(json.dumps(resp, ensure_ascii=False))
 
     # Mo_waS
     def test_get_mowas_warnings(self):
@@ -91,10 +93,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
+            #print(json.dumps(resp, ensure_ascii=False))
 
     # D_wD
     def test_get_dwd_warnings(self):
@@ -130,10 +134,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
+            #print(json.dumps(resp, ensure_ascii=False))
 
     # _wIAPP
     def test_get_biwapp_warnings(self):
@@ -169,10 +175,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
+            #print(json.dumps(resp, ensure_ascii=False))
 
     # Police
     def test_get_police_warnings(self):
@@ -208,10 +216,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
+            #print(json.dumps(resp, ensure_ascii=False))
 
     # Lhp - High Tide warnings
     def test_get_lhpMapData(self):
@@ -247,11 +257,12 @@ class TestNina(TestCase):
                                                                     'expiresDate',
                                                                     'severity',
                                                                     'i18nTitle',
-                                                                    'sent'])
+                                                                    'sent',
+                                                                    'features'])
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_WARNINGS_COMPLETE)
-
+            #print(json.dumps(resp, ensure_ascii=False))
 
 if __name__ == '__main__':
     unittest.main()
