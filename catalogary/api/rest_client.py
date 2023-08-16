@@ -5,7 +5,6 @@
 import logging
 import urllib.parse
 from json import dumps
-from urllib.error import HTTPError
 
 import requests
 
@@ -154,7 +153,7 @@ class FedRepRestAPI(object):
                 logger.error(e)
                 response.raise_for_status()
             else:
-                raise HTTPError(error_msg, response=response)
+                raise requests.HTTPError(error_msg, response=response)
         else:
             response.raise_for_status()
 

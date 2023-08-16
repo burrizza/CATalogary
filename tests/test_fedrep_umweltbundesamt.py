@@ -2,6 +2,7 @@
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
+import json
 import logging
 import sys
 import unittest
@@ -21,7 +22,7 @@ class TestUmweltbundesamt(TestCase):
     """
 
     def setUp(self):
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler(sys.stdout)) # thanks to Fabio Zadrozny (
                                                              # https://stackoverflow.com/a/7483862)
         self.umbamt = UmweltbundesamtAPI(url=f'https://umweltbundesamt.api.proxy.bund.dev/api/air_data/')
@@ -32,6 +33,7 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             validate(instance=resp, schema=self.umbamt.JSON_SCHEMA_UMWELTBAMT_STATIONS)
+            logger.debug(json.dumps(resp, ensure_ascii=False))
 
     def test_get_stationsCurrent(self):
         """Retrieve oxygen measurement stations from Umweltbundesamt interface if exist"""
@@ -41,6 +43,7 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             validate(instance=resp, schema=self.umbamt.JSON_SCHEMA_UMWELTBAMT_META)
+            logger.debug(json.dumps(resp, ensure_ascii=False))
 
     def test_get_components(self):
         """Retrieve all measures from Umweltbundesamt interface if exist"""
@@ -48,6 +51,7 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             validate(instance=resp, schema=self.umbamt.JSON_SCHEMA_UMWELTBAMT_COMPONENTS)
+            logger.debug(json.dumps(resp, ensure_ascii=False))
 
     def test_get_measures(self):
         """Retrieve all measures from Umweltbundesamt interface if exist"""
@@ -56,6 +60,7 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             validate(instance=resp, schema=self.umbamt.JSON_SCHEMA_UMWELTBAMT_MEASURES)
+            logger.debug(json.dumps(resp, ensure_ascii=False))
 
     def test_get_measuresAllComp(self):
         """Retrieve all measures from Umweltbundesamt interface if exist"""
@@ -66,8 +71,7 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             self.assertIsInstance(resp, dict)
-            # print('Umweltbamt measures yesterday all components')
-            # print(json.dumps(resp.get('21')))
+            logger.debug(json.dumps(resp, ensure_ascii=False))
 
 
 if __name__ == '__main__':
