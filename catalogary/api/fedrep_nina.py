@@ -3,10 +3,10 @@
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
 import logging
+
 from .rest_client import FedRepRestAPI
 
 logger = logging.getLogger(__name__)
-
 
 class NinaAPI(FedRepRestAPI):
     """

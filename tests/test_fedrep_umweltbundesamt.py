@@ -2,12 +2,17 @@
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
+import logging
+import sys
 import unittest
-from unittest import TestCase
-from jsonschema import validate
 from datetime import date, timedelta
+from unittest import TestCase
+
+from jsonschema import validate
+
 from catalogary import UmweltbundesamtAPI
 
+logger = logging.getLogger()
 
 class TestUmweltbundesamt(TestCase):
     """
@@ -16,6 +21,9 @@ class TestUmweltbundesamt(TestCase):
     """
 
     def setUp(self):
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(logging.StreamHandler(sys.stdout)) # thanks to Fabio Zadrozny (
+                                                             # https://stackoverflow.com/a/7483862)
         self.umbamt = UmweltbundesamtAPI(url=f'https://umweltbundesamt.api.proxy.bund.dev/api/air_data/')
 
     def test_get_stationsAll(self):

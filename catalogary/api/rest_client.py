@@ -2,10 +2,12 @@
 # Modifications copyright 2023 burrizza
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
-import requests
 import logging
 import urllib.parse
 from json import dumps
+
+import requests
+from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
@@ -200,12 +202,13 @@ class FedRepRestAPI(object):
         if files is None:
             data = None if not data else dumps(data)
             json_dump = None if not json else dumps(json)
-        self.log_curl_debug(
-            method=method,
-            url=url,
-            headers=headers,
-            data=data if data else json_dump,
-        )
+        # TODO: turned off curl output because of differing syntax between curl versions
+        #self.log_curl_debug(
+        #    method=method,
+        #    url=url,
+        #    headers=headers,
+        #    data=data if data else json_dump,
+        #)
         headers = headers or self.default_headers
         response = self._session.request(
             method=method,

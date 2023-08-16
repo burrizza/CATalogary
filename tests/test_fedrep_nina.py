@@ -3,11 +3,16 @@
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
 import json
+import logging
+import sys
 import unittest
 from unittest import TestCase
+
 from jsonschema import validate
+
 from catalogary import NinaAPI
 
+logger = logging.getLogger()
 
 class TestNina(TestCase):
     """
@@ -16,6 +21,9 @@ class TestNina(TestCase):
     """
 
     def setUp(self):
+        logger.setLevel(logging.INFO)
+        logger.addHandler(logging.StreamHandler(sys.stdout)) # thanks to Fabio Zadrozny (
+                                                             # https://stackoverflow.com/a/7483862)
         self.nina = NinaAPI(url=f'https://nina.api.proxy.bund.dev/')
 
     # KAT_warn
