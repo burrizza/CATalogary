@@ -5,9 +5,9 @@
 import logging
 import urllib.parse
 from json import dumps
+from urllib.error import HTTPError
 
 import requests
-from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
