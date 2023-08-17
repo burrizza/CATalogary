@@ -97,7 +97,7 @@ class NinaAPI(FedRepRestAPI):
             params['expand'] = expand  # TODO: expand is jira specific, eg "&expand=None"
         return self.get(url, params=params)
 
-    def lhd_warnings(self, expand=None):
+    def lhp_warnings(self, expand=None):
         """
         Retrieve lhp (Hochwasser Portal - german flood warning system) warnings using the NINA interface.
         Args:

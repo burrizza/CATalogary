@@ -239,14 +239,14 @@ class TestNina(TestCase):
     # Lhp - High Tide warnings
     def test_get_lhpMapData(self):
         """Retrieve LHP warnings from NINA interface if exist"""
-        resp = self.nina.lhd_warnings()
+        resp = self.nina.lhp_warnings()
         self.assertIsInstance(resp, list)
         if len(resp):
             validate(instance=resp, schema=self.nina.JSON_SCHEMA_LHP_WARNINGS)
 
     def test_get_lhp_warning_detail(self):
         """Retrieve LHP warnings from NINA interface if exist"""
-        resp = self.nina.lhd_warnings()
+        resp = self.nina.lhp_warnings()
         self.assertIsInstance(resp, list)
         if len(resp):
             resp_id = resp[0]['id']
@@ -255,7 +255,7 @@ class TestNina(TestCase):
 
     def test_get_lhp_warning_geo(self):
         """Retrieve LHP warnings from NINA interface if exist"""
-        resp = self.nina.lhd_warnings()
+        resp = self.nina.lhp_warnings()
         self.assertIsInstance(resp, list)
         if len(resp):
             resp_id = resp[0]['id']
@@ -264,7 +264,7 @@ class TestNina(TestCase):
 
     def test_get_lhpComplete(self):
         """Retrieve LHP warnings from NINA interface if exist"""
-        resp_warnings = self.nina.lhd_warnings()
+        resp_warnings = self.nina.lhp_warnings()
         resp = self.nina.generic_complete(resp_warnings, selection=['id',
                                                                     'startDate',
                                                                     'expiresDate',
