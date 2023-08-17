@@ -3,6 +3,7 @@
 # Copyright 2014 Mateusz Harasymczuk, Gonchik Tsymzhitov (atlassian-api)
 ######
 import logging
+from time import sleep
 
 from .rest_client import FedRepRestAPI
 
@@ -49,7 +50,7 @@ class UmweltbundesamtAPI(FedRepRestAPI):
     def measures_components(self, respComponents, date_from, time_from='24', date_to='2999-12-31', time_to='24',
                             scope='2', selection=None, expand=None):
         """
-        Delivers all List with all informations to the given warnings.
+        Delivers all List with all informations to the given warnings by iterating through every single component.
         Args:
             selection: A list with a selection of the toplevel fields of interest.
             expand: Out of Order (TODO)
@@ -82,6 +83,77 @@ class UmweltbundesamtAPI(FedRepRestAPI):
                             compDescription['id']: [compDescription, value.get(key2)]}
 
         return genericCompDict
+
+    def measures_stations_hour(self, respComponents, date_from, time_from='24', date_to='2999-12-31', time_to='24',
+                                    sleeptime=1, selection=None, expand=None):
+        """
+        Delivers all List with all information to the given warnings by iterating through every single component.
+        Their timestamp is a little bit unclear. Seems that the one used as values is UTC+01:00 and the system
+        works 1 hours in the past. The key time is UTC, but not used by the search parameters.
+        Args:
+            selection: A list with a selection of the toplevel fields of interest.
+            expand: Out of Order (TODO)
+
+        Returns: A List with all available informations to given warnings.
+        """
+
+        # get stations respective to given time
+        resp_stations = self.meta(date_from=date_from, time_from=time_from, date_to=date_to, time_to=time_to)
+        dict_stations = resp_stations.get('stations')
+
+        # new dictionary -> id
+        l_stations_all = list()
+        dict_stations_all = dict()
+        for i in range(1, respComponents.get('count') + 1):
+            # transfer given list to more comfortable dictionary
+            # active: 1: PM10 (Particulate matter),3: 03 (Ozone), 5: NO2 (Nitrogen dioxide)
+            comp_description = {
+                'id': respComponents.get(str(i))[0],
+                'code': respComponents.get(str(i))[1],
+                'symbol': respComponents.get(str(i))[2],
+                'unit': respComponents.get(str(i))[3],
+                'name': respComponents.get(str(i))[4]
+            }
+            dict_scopes = {'2': '1SMW',     # Ein-Stunden-Mittelwert
+                           '3': '1SMW_MAX', # Ein-Stunden-Tagesmaxima
+                           '6': '1TMWGL'}   # Tagesmittel
+
+            for (scope_key, scope_val) in dict_scopes.items():
+                # get the measurements from all stations for the current component
+                resp_measures_scope = self.measures(date_from=date_from, time_from=time_from, date_to=date_to, time_to=time_to,
+                                                 scope=scope_key, component=comp_description['id'])
+                if sleeptime is not None:
+                    sleep(sleeptime)
+
+                for station_id, l_station in dict_stations.items():
+                    dict_data_scope = resp_measures_scope.get('data').get(station_id)
+
+                    if dict_stations_all.get(station_id) is None and dict_data_scope is not None:
+                        dict_stations_all[station_id] = {key_ts: {comp_description.get('code'): {scope_val: val_measure[2]}}
+                                                         for (key_ts, val_measure) in dict_data_scope.items()}
+                    elif dict_stations_all.get(station_id) is not None and dict_data_scope is not None:
+
+                        for (key_ts, val_measure) in dict_data_scope.items():
+                            # timestamp already in dictionary of this station
+                            if (dict_stations_all[station_id].get(key_ts)):
+                                if (dict_stations_all[station_id].get(key_ts).get(comp_description.get('code'))):
+                                    dict_stations_all[station_id][key_ts][comp_description.get('code')].update({scope_val: val_measure[2]})
+                                else:
+                                    dict_stations_all[station_id][key_ts].update({comp_description.get('code'): {scope_val: val_measure[2]}})
+                            else:
+                                dict_stations_all[station_id][key_ts] = {comp_description.get('code'): {scope_val: val_measure[2]}}
+
+
+
+
+        # transform dict to list after enrichment (lazy)
+        for station_id, dict_station in dict_stations_all.items():
+            for ts, measures in dict_station.items():
+                 l_stations_all.append({'timestamp': ts, 'station_id': station_id, 'station_active_from': dict_stations.get(station_id)[5],
+                                   'station_active_to':  dict_stations.get(station_id)[6], 'station_lat': dict_stations.get(station_id)[8],
+                                   'station_lon': dict_stations.get(station_id)[7], 'measures': measures})
+
+        return l_stations_all
 
     def components(self, lang='en'):
         """

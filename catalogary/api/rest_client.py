@@ -266,7 +266,6 @@ class FedRepRestAPI(object):
             absolute=absolute,
             advanced_mode=advanced_mode,
         )
-
         if self.advanced_mode or advanced_mode:
             return response
         if not_json_response:

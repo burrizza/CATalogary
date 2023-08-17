@@ -6,7 +6,7 @@ import json
 import logging
 import sys
 import unittest
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from unittest import TestCase
 
 from jsonschema import validate
@@ -46,7 +46,7 @@ class TestUmweltbundesamt(TestCase):
             logger.debug(json.dumps(resp, ensure_ascii=False))
 
     def test_get_components(self):
-        """Retrieve all measures from Umweltbundesamt interface if exist"""
+        """Retrieve all measures from Umweltbundesamt interface if exists."""
         resp = self.umbamt.components()
         self.assertIsInstance(resp, dict)
         if (len(resp)):
@@ -71,8 +71,25 @@ class TestUmweltbundesamt(TestCase):
         self.assertIsInstance(resp, dict)
         if (len(resp)):
             self.assertIsInstance(resp, dict)
-            logger.debug(json.dumps(resp, ensure_ascii=False))
+            logger.debug(json.dumps(resp.get('21'), ensure_ascii=False))
 
+    def test_get_measuresAll(self):
+        """ Retrieve all measures from Umweltbundesamt interface if exist
+            using all components (dynamically) and scopes 2:1SMW (1hr average),
+            3:1SMW_MAX (1hr maximum), 6:1TMWGL (average of day per hr)
+        """
+        yesterday = date.today() - timedelta(days=1)
+        resp_comp = self.umbamt.components()
+
+
+        resp = self.umbamt.measures_stations_hour(respComponents=resp_comp,
+                                                  time_from=(datetime.utcnow() + timedelta(hours=1) # utcnow +1 is used
+                                                             - timedelta(hours=1)).strftime('%H'),  # -1h frequency
+                                                  date_from=date.today().strftime("%Y-%m-%d"))
+        self.assertIsInstance(resp_comp, dict)
+        if (len(resp)):
+            self.assertIsInstance(resp, list)
+            logger.debug(json.dumps(resp[:20], ensure_ascii=False))
 
 if __name__ == '__main__':
     unittest.main()
