@@ -130,7 +130,7 @@ class NinaAPI(FedRepRestAPI):
 
     def warning_geo(self, key, expand=None):
         """
-        Delivers geographical information about a warning.
+        Retrieve geographical information about a warning.
         Args:
             key: The Id corresponding to the warning of interest.
             expand: Out of Order (TODO)
@@ -146,13 +146,13 @@ class NinaAPI(FedRepRestAPI):
 
     def generic_complete(self, resp_warnings, selection=None, expand=None):
         """
-        Delivers all List with all information to the given warnings.
+        Get a List including all information to given warnings.
         Args:
             resp_warnings: A list with the response of the warnings which should be completed.
             selection: A list with a selection of the toplevel fields of interest.
             expand: Out of Order (TODO)
 
-        Returns: A List with all available informations to given warnings.
+        Returns: A List with all available information to given warnings.
         """
         genericCompList = list()
         for resp in resp_warnings:

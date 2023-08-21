@@ -27,7 +27,7 @@ class UmweltbundesamtAPI(FedRepRestAPI):
     def measures(self, date_from, time_from='24', date_to='2999-12-31', time_to='24', station=None, scope='2',
                  component='1', selection=None, expand=None):
         """
-        Retrieve a component given by the API of the Umweltbundesamt.
+        Retrieve a component using the API of the Umweltbundesamt.
         Args:
             expand: Out of Order (TODO)
 
@@ -50,7 +50,10 @@ class UmweltbundesamtAPI(FedRepRestAPI):
     def measures_components(self, respComponents, date_from, time_from='24', date_to='2999-12-31', time_to='24',
                             scope='2', selection=None, expand=None):
         """
-        Delivers all List with all informations to the given warnings by iterating through every single component.
+        Request a list with all given information to the given scope.
+        The Umweltbundesamt delivers inconsistent timestamps so their correctness is a little bit unclear. Seems that
+        the one used as values is UTC+01:00 and the system works 1 hour delayed. The timestamp used as key could be
+        UTC, but again not used by the search parameters.
         Args:
             selection: A list with a selection of the toplevel fields of interest.
             expand: Out of Order (TODO)
@@ -84,12 +87,26 @@ class UmweltbundesamtAPI(FedRepRestAPI):
 
         return genericCompDict
 
-    def measures_stations_hour(self, respComponents, date_from, time_from='24', date_to='2999-12-31', time_to='24',
-                                    sleeptime=1, selection=None, expand=None):
+    def measures_stations(self,
+                               respComponents,
+                               date_from,
+                               time_from='24',
+                               date_to='2999-12-31',
+                               time_to='24',
+                               dict_scopes = {'1': '1TMW', '2': '1SMW', '3': '1SMW_MAX', '6': '1TMWGL'},
+                               sleeptime=1, selection=None, expand=None):
         """
-        Delivers all List with all information to the given warnings by iterating through every single component.
-        Their timestamp is a little bit unclear. Seems that the one used as values is UTC+01:00 and the system
-        works 1 hours in the past. The key time is UTC, but not used by the search parameters.
+        Request a list with all given scope-based information.
+        The Umweltbundesamt delivers inconsistent timestamps so their correctness is a little bit unclear. Seems that
+        the one used as values is UTC+01:00 and the system works 1 hour delayed. The timestamp used as key could be
+        UTC, but again not used by the search parameters.
+        Scopes:
+        2: 1SMW -> Ein-Stunden-Mittelwert
+        3: 1SMW_MAX -> Ein-Stunden-Tagesmaxima
+        6: 1TMWGL -> Tagesmittel stündlich gleitend
+        1: 1TMW -> Tagesmittel (every day 12:00 utc+1)
+        5: 8SMW_MAX -> 8h Tagesmaxima
+        4: 8SMW -> 8h Mittelwert
         Args:
             selection: A list with a selection of the toplevel fields of interest.
             expand: Out of Order (TODO)
@@ -114,9 +131,6 @@ class UmweltbundesamtAPI(FedRepRestAPI):
                 'unit': respComponents.get(str(i))[3],
                 'name': respComponents.get(str(i))[4]
             }
-            dict_scopes = {'2': '1SMW',     # Ein-Stunden-Mittelwert
-                           '3': '1SMW_MAX', # Ein-Stunden-Tagesmaxima
-                           '6': '1TMWGL'}   # Tagesmittel
 
             for (scope_key, scope_val) in dict_scopes.items():
                 # get the measurements from all stations for the current component
